@@ -3,6 +3,7 @@
 		restart_modal,
 		name_label: string,
 		show_name_edit: boolean,
+		send_on_enter: boolean,
 		hide_parameters: boolean,
 		name: string,
 		description_label: string,
@@ -26,7 +27,6 @@
 
 	import { createEventDispatcher } from 'svelte';
 	import type { CreateChatCompletionRequest } from 'openai';
-	import { send_on_enter } from './store';
 	const dispatch =
 		createEventDispatcher();
 </script>
@@ -117,7 +117,7 @@
 			<p>Options</p>
 			<div>
 				<Toggle
-					bind:toggled={$send_on_enter}
+					bind:toggled={send_on_enter}
 					labelA="The enter key will create a new line, instead of sending the message"
 					labelB="The enter key will send the message, instead of creating a new line"
 					labelText="What the Enter key does while the message input is focused (pressing the 'Ctrl' key with the 'Enter' key overrides this, and sends the message)"

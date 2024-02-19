@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { TextArea, Button, InlineLoading } from 'carbon-components-svelte';
 	import { createEventDispatcher } from 'svelte';
-	import { send_on_enter } from './store';
+	// import { send_on_enter } from './store';
 	import FileUpload from '../FileUpload.svelte';
 	import type { ChatCompletionContentPartImage, ChatCompletionUserMessageParam } from 'openai/resources';
 	import { notify } from '$lib/util/notify';
@@ -11,6 +11,7 @@
 		success: boolean,
 		more_open: boolean,
 		can_send: boolean,
+		send_on_enter: boolean,
 		loading: boolean,
 		content_error: boolean,
 		content_error_text: string,
@@ -26,7 +27,7 @@
 	const keydown = (e: KeyboardEvent) => {
 		switch (e.key) {
 			case 'Enter':
-				if (!$send_on_enter && !e.ctrlKey) return;
+				if (!send_on_enter && !e.ctrlKey) return;
 				if (can_send && document && document.activeElement === message_input_ref) send();
 		}
 	};
@@ -112,7 +113,7 @@
 			rows={2}
 			disabled={loading}
 			on:keydown={(e) => {
-				if (e.key === 'Enter' && $send_on_enter) e.preventDefault();
+				if (e.key === 'Enter' && send_on_enter) e.preventDefault();
 			}}
 			invalid={content_error}
 			invalidText={content_error_text}

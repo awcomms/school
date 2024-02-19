@@ -4,6 +4,12 @@ import { client } from '$lib/util/redis/index.js';
 import { eup } from '$lib/util/user/create/eup.js';
 import { hash } from 'argon2';
 import { code } from '$lib/util/user/auth/check.js';
+import type { Cookies } from '@sveltejs/kit';
+
+const login = ({ cookies, locals, id }: { cookies: Cookies; locals: App.Locals; id: string }) => {
+	cookies.set('code', `${code(id)}`, { path: '/' });
+	locals.user = id;
+};
 
 export const POST = async ({ cookies, request, locals }) => {
 	try {
@@ -16,8 +22,7 @@ export const POST = async ({ cookies, request, locals }) => {
 			if (res.total) return new Response('user already exists', { status: 400 });
 			const id = await eup({ e, u, p: await hash(p) });
 			const cn = code(id as string);
-			cookies.set('code', `${code(id)}`, { path: '/' });
-			locals.user = id;
+			login({cookies, locals, id});
 			return new Response(id);
 		} else {
 			const password_hash = await hash(p);
@@ -27,14 +32,11 @@ export const POST = async ({ cookies, request, locals }) => {
 			});
 			if (!res.total) return new Response('user not found');
 			const user = res.documents[0].value;
-			if (user.value.p !== password_hash) {
+			if (user.value?.p !== password_hash) {
 				return new Response('wrong password', { status: 400 });
 			}
-			const c = code(user.id as string);
-			console.debug('--c', c);
-			cookies.set('code', c, { path: '/' });
-			locals.user = user.id as string;
-			return new Response(user.value.u);
+			login({ cookies, locals, id: user?.id as string });
+			return new Response(user.value.u as string);
 		}
 	} catch (e) {
 		throw handle_server_error(request, e);

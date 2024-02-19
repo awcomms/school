@@ -1,6 +1,7 @@
 <script lang="ts">
 	export let hide_parameters = false,
 		show_name_edit = false,
+		send_on_enter: boolean,
 		disable_description_edit = false,
 		description = '';
 
@@ -82,7 +83,7 @@
 				return;
 			}
 
-			switch (first_choice.finish_details.type) {
+			switch (first_choice.finish_reason) {
 				case 'stop':
 					messages = [
 						...messages,
@@ -167,6 +168,7 @@
 	bind:chat_container
 	bind:success
 	bind:more_open
+	bind:send_on_enter
 	name_label="Give the Assistant a name"
 	description_label="Tell the Assistant how to behave"
 	{hide_parameters}

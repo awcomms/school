@@ -35,6 +35,7 @@
 		send_without_content = false,
 		send_without_description = false,
 		content_error = false,
+		send_on_enter: boolean,
 		content_error_text = 'You may not send an empty message',
 		message_input_ref: HTMLTextAreaElement,
 		// run: (m: ChatCompletionUserMessageParam) => void,
@@ -46,7 +47,6 @@
 	import Input from './Input.svelte';
 	import { createEventDispatcher } from 'svelte';
 	import More from './More.svelte';
-	import { send_on_enter } from './store';
 	import type {
 		ChatCompletionCreateParamsNonStreaming,
 		ChatCompletionMessageParam,
@@ -107,6 +107,7 @@
 	{name_label}
 	{show_name_edit}
 	{hide_parameters}
+	bind:send_on_enter
 	bind:name
 	{description_label}
 	{description_error}
@@ -125,7 +126,9 @@
 				{/each}
 			</div>
 			<Input
+
 				on:send={send}
+				bind:send_on_enter
 				bind:success
 				bind:can_send
 				bind:loading
@@ -150,7 +153,7 @@
 		display: flex
 		flex-grow: 2
 		flex-direction: column
-		height: 100%
+		height: 360px
 		width: 100%
 		overflow-y: scroll
 		row-gap: 1rem
